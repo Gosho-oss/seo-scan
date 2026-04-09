@@ -43,7 +43,7 @@ export default function Footer() {
 
           {/* Right Section - GitHub Link */}
           <a
-            href="https://github.com"
+            href="https://github.com/Gosho-oss/seo-scan"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 text-slate-700 hover:text-indigo-600 font-medium text-sm relative overflow-hidden"
