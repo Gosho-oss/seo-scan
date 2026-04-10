@@ -49,6 +49,42 @@ export default function FeaturesSection() {
       description: "Get an instant SEO score with detailed recommendations to improve your website's visibility and rankings.",
       color: "emerald",
     },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+          <rect x="3" y="3" width="8" height="18" />
+          <rect x="13" y="3" width="8" height="18" />
+          <path d="M9 9h6M9 15h6" />
+        </svg>
+      ),
+      title: "Side-by-Side Comparison",
+      description: "Compare two websites head-to-head across all SEO metrics. See which site wins each check and get an overall winner summary.",
+      color: "pink",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+          <circle cx="12" cy="12" r="1" />
+          <path d="M12 7v10M12 7l-3 3m3-3l3 3" />
+          <path d="M8 17h8M9 20h6" />
+          <rect x="5" y="3" width="14" height="2" rx="1" />
+        </svg>
+      ),
+      title: "Robots.txt Analysis",
+      description: "Verify your robots.txt file exists and is accessible to search engines. Missing robots.txt can lead to unwanted page crawling.",
+      color: "cyan",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-6 h-6">
+          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+          <path d="M12 10v4M10 12h4" />
+        </svg>
+      ),
+      title: "Sitemap Detection",
+      description: "Check if your sitemap.xml is present and properly linked. A valid sitemap helps search engines index your content faster.",
+      color: "orange",
+    },
   ];
 
   const colorClasses = {
@@ -56,6 +92,9 @@ export default function FeaturesSection() {
     purple: "bg-purple-50 text-purple-600 group-hover:bg-purple-600 group-hover:text-white",
     sky: "bg-sky-50 text-sky-600 group-hover:bg-sky-600 group-hover:text-white",
     emerald: "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white",
+    pink: "bg-pink-50 text-pink-600 group-hover:bg-pink-600 group-hover:text-white",
+    cyan: "bg-cyan-50 text-cyan-600 group-hover:bg-cyan-600 group-hover:text-white",
+    orange: "bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white",
   };
 
   return (
@@ -80,7 +119,7 @@ export default function FeaturesSection() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, idx) => (
             <div
               key={idx}
