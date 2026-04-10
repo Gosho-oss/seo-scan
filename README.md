@@ -236,4 +236,4 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ## Author
 
 Made by [Gosho-oss](https://github.com/Gosho-oss)  
-If this project helped you, consider giving it a ⭐
+If this project helped you, consider giving it a ⭐!

@@ -15,6 +15,12 @@ export interface SeoResult {
   imagesWithoutAlt: number;
   totalImages: number;
   score: number; // 0–100
+  // FEATURE 1: Open Graph Tags
+  ogTitle: string | null;
+  ogDescription: string | null;
+  ogImage: string | null;
+  // FEATURE 2: Canonical URL
+  canonicalUrl: string | null;
 }
 
 /** Response shape when the API returns an error */

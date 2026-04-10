@@ -23,7 +23,7 @@ export function isValidUrl(raw: string): boolean {
  *  - No images missing alt attributes:             20 pts
  *  - At least one H2 tag present:                  10 pts
  */
-export function calculateScore(data: Omit<SeoResult, "score">): number {
+export function calculateScore(data: Omit<SeoResult, "score" | "ogTitle" | "ogDescription" | "ogImage" | "canonicalUrl">): number {
   let score = 0;
 
   // --- Title (25 pts) ---
@@ -117,6 +117,14 @@ export async function analyzeUrl(rawUrl: string): Promise<SeoResult> {
   const metaDescription =
     $('meta[name="description"]').attr("content")?.trim() || null;
 
+  // FEATURE 1: Parse Open Graph tags
+  const ogTitle = $('meta[property="og:title"]').attr("content")?.trim() || null;
+  const ogDescription = $('meta[property="og:description"]').attr("content")?.trim() || null;
+  const ogImage = $('meta[property="og:image"]').attr("content")?.trim() || null;
+
+  // FEATURE 2: Parse Canonical URL
+  const canonicalUrl = $('link[rel="canonical"]').attr("href")?.trim() || null;
+
   const h1Count = $("h1").length;
   const h2Count = $("h2").length;
   const h3Count = $("h3").length;
@@ -143,6 +151,12 @@ export async function analyzeUrl(rawUrl: string): Promise<SeoResult> {
     h3Count,
     imagesWithoutAlt,
     totalImages,
+    // FEATURE 1: Include OG tags in result
+    ogTitle,
+    ogDescription,
+    ogImage,
+    // FEATURE 2: Include canonical URL in result
+    canonicalUrl,
   };
 
   return { ...partial, score: calculateScore(partial) };

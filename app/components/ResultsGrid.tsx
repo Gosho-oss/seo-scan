@@ -131,6 +131,24 @@ const ImageIcon = () => (
   </svg>
 );
 
+// FEATURE 1: Open Graph Icon
+const OpenGraphIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+    <circle cx="9" cy="9" r="1" fill="currentColor" />
+    <circle cx="15" cy="9" r="1" fill="currentColor" />
+  </svg>
+);
+
+// FEATURE 2: Canonical URL Icon
+const CanonicalIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  </svg>
+);
+
 // ---------- Main Component ----------
 
 export default function ResultsGrid({ result }: ResultsGridProps) {
@@ -269,6 +287,115 @@ export default function ResultsGrid({ result }: ResultsGridProps) {
                     </span>
                   )}
             </p>
+          </Card>
+
+          {/* ===== FEATURE 1: Open Graph Tags Card ===== */}
+          <Card icon={<OpenGraphIcon />} title="Open Graph Tags" index={4}>
+            <div className="flex flex-col gap-3">
+              {/* OG Title */}
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  og:title
+                </div>
+                {result.ogTitle ? (
+                  <p className="text-slate-700 text-sm font-medium line-clamp-2">
+                    {result.ogTitle}
+                  </p>
+                ) : (
+                  <p className="text-red-600 text-xs font-semibold bg-red-50 p-2 rounded border border-red-100">
+                    Missing og:title
+                  </p>
+                )}
+              </div>
+
+              {/* OG Description */}
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  og:description
+                </div>
+                {result.ogDescription ? (
+                  <p className="text-slate-700 text-sm font-medium line-clamp-2">
+                    {result.ogDescription}
+                  </p>
+                ) : (
+                  <p className="text-red-600 text-xs font-semibold bg-red-50 p-2 rounded border border-red-100">
+                    Missing og:description
+                  </p>
+                )}
+              </div>
+
+              {/* OG Image */}
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                  og:image
+                </div>
+                {result.ogImage ? (
+                  <div className="flex flex-col gap-2">
+                    <img
+                      src={result.ogImage}
+                      alt="Open Graph preview"
+                      className="w-full h-32 object-cover rounded border border-slate-200"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                    <p className="text-slate-600 text-xs truncate">
+                      {result.ogImage}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-red-600 text-xs font-semibold bg-red-50 p-2 rounded border border-red-100">
+                    Missing og:image
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Summary: show green checkmark if all present, else red warnings */}
+            <div className="pt-3 border-t border-slate-100 mt-3">
+              {result.ogTitle && result.ogDescription && result.ogImage ? (
+                <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  All OG tags present
+                </div>
+              ) : (
+                <div className="text-yellow-600 text-xs font-semibold">
+                  {[!result.ogTitle && "og:title", !result.ogDescription && "og:description", !result.ogImage && "og:image"]
+                    .filter(Boolean)
+                    .join(", ")} missing
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* ===== FEATURE 2: Canonical URL Card ===== */}
+          <Card icon={<CanonicalIcon />} title="Canonical URL" index={5}>
+            {result.canonicalUrl ? (
+              <div className="flex flex-col gap-3">
+                <a
+                  href={result.canonicalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 hover:text-indigo-700 text-sm font-semibold underline underline-offset-2 decoration-indigo-200 hover:decoration-indigo-500 transition-colors duration-300 break-all line-clamp-3"
+                >
+                  {result.canonicalUrl}
+                </a>
+                <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold pt-2 border-t border-slate-100">
+                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Canonical tag found
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <p className="text-red-600 text-sm font-semibold bg-red-50 p-3 rounded-lg border border-red-100">
+                  No canonical URL found. This may cause duplicate content issues.
+                </p>
+              </div>
+            )}
           </Card>
         </div>
       </div>

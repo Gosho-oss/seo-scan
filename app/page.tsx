@@ -10,6 +10,58 @@ import ResultsGrid from "./components/ResultsGrid";
 import Footer from "./components/Footer";
 import type { SeoApiResponse, SeoResult } from "./types/seo";
 
+// ===== FEATURE 3: Utility function to generate JSON report =====
+function generateJsonReport(result: SeoResult): void {
+  // Extract domain from URL for filename
+  const urlObj = new URL(result.url);
+  const domain = urlObj.hostname.replace("www.", "");
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+
+  // Build comprehensive report object
+  const report = {
+    url: result.url,
+    analyzedAt: new Date().toISOString(),
+    seoScore: result.score,
+    title: {
+      content: result.title,
+      length: result.titleLength,
+    },
+    metaDescription: {
+      content: result.metaDescription,
+      length: result.metaDescriptionLength,
+    },
+    openGraph: {
+      ogTitle: result.ogTitle,
+      ogDescription: result.ogDescription,
+      ogImage: result.ogImage,
+    },
+    canonicalUrl: result.canonicalUrl,
+    headings: {
+      h1: result.h1Count,
+      h2: result.h2Count,
+      h3: result.h3Count,
+    },
+    images: {
+      total: result.totalImages,
+      missingAlt: result.imagesWithoutAlt,
+    },
+  };
+
+  // Convert to JSON and create blob
+  const jsonString = JSON.stringify(report, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  // Trigger download
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `seoscan-report-${domain}-${today}.json`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 export default function Home() {
   const [result, setResult] = useState<SeoResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +172,28 @@ export default function Home() {
         {result && !isLoading && (
           <div className="w-full z-10 mt-8">
             <ResultsGrid result={result} />
+
+            {/* ===== FEATURE 3: Download Report Button ===== */}
+            <div className="w-full max-w-5xl mx-auto flex justify-center mt-12 animate-slideUpFade">
+              <button
+                onClick={() => generateJsonReport(result)}
+                className="group flex items-center gap-3 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+              >
+                {/* Download Icon */}
+                <svg
+                  className="w-5 h-5 group-hover:translate-y-0.5 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>Download Report as JSON</span>
+              </button>
+            </div>
           </div>
         )}
       </main>
