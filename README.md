@@ -72,6 +72,8 @@ This SaaS-grade SEO analyzer features sophisticated, performance-optimized anima
 
 https://seo-scan1.vercel.app/
 
+<img width="1512" height="862" alt="Screenshot 2026-04-10 at 11 53 28 AM" src="https://github.com/user-attachments/assets/c4d02b14-3c6d-4d3f-b0f3-d423af3f13bd" />
+
 ---
 
 ## Installation
