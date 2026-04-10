@@ -149,6 +149,23 @@ const CanonicalIcon = () => (
   </svg>
 );
 
+// FEATURE 3: Robots.txt Icon
+const RobotsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+    <circle cx="9" cy="9" r="1" fill="currentColor" />
+    <circle cx="15" cy="9" r="1" fill="currentColor" />
+    <path d="M12 17c3 0 4-2 4-5V4M4 4h16v10c0 3-1 5-4 5" />
+  </svg>
+);
+
+// FEATURE 4: Sitemap Icon
+const SitemapIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+);
+
 // ---------- Main Component ----------
 
 export default function ResultsGrid({ result }: ResultsGridProps) {
@@ -395,6 +412,53 @@ export default function ResultsGrid({ result }: ResultsGridProps) {
                   No canonical URL found. This may cause duplicate content issues.
                 </p>
               </div>
+            )}
+          </Card>
+
+          {/* ===== FEATURE 3: Robots.txt Card ===== */}
+          <Card icon={<RobotsIcon />} title="Robots.txt" index={6}>
+            {result.robotsTxt.exists && result.robotsTxt.content ? (
+              <div className="flex flex-col gap-3">
+                <pre className="bg-slate-900 text-slate-100 text-xs p-3 rounded-lg overflow-x-auto font-mono whitespace-pre-wrap break-words max-h-40">
+                  {result.robotsTxt.content}
+                </pre>
+                <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold pt-2 border-t border-slate-100">
+                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Robots.txt found
+                </div>
+              </div>
+            ) : (
+              <p className="text-red-600 text-sm font-semibold bg-red-50 p-3 rounded-lg border border-red-100">
+                No robots.txt found. Search engines may crawl unwanted pages.
+              </p>
+            )}
+          </Card>
+
+          {/* ===== FEATURE 4: Sitemap Card ===== */}
+          <Card icon={<SitemapIcon />} title="Sitemap" index={7}>
+            {result.sitemap.exists && result.sitemap.url ? (
+              <div className="flex flex-col gap-3">
+                <a
+                  href={result.sitemap.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 hover:text-indigo-700 text-sm font-semibold underline underline-offset-2 decoration-indigo-200 hover:decoration-indigo-500 transition-colors duration-300 break-all"
+                >
+                  {result.sitemap.url}
+                </a>
+                <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold pt-2 border-t border-slate-100">
+                  <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Sitemap found
+                </div>
+              </div>
+            ) : (
+              <p className="text-red-600 text-sm font-semibold bg-red-50 p-3 rounded-lg border border-red-100">
+                No sitemap.xml found. This may affect search engine indexing.
+              </p>
             )}
           </Card>
         </div>

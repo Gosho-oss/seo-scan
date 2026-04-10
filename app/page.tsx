@@ -45,6 +45,16 @@ function generateJsonReport(result: SeoResult): void {
       total: result.totalImages,
       missingAlt: result.imagesWithoutAlt,
     },
+    // FEATURE 3: Include robots.txt in report
+    robotsTxt: {
+      exists: result.robotsTxt.exists,
+      preview: result.robotsTxt.content,
+    },
+    // FEATURE 4: Include sitemap in report
+    sitemap: {
+      exists: result.sitemap.exists,
+      url: result.sitemap.url,
+    },
   };
 
   // Convert to JSON and create blob

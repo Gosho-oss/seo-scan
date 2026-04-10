@@ -23,7 +23,7 @@ export function isValidUrl(raw: string): boolean {
  *  - No images missing alt attributes:             20 pts
  *  - At least one H2 tag present:                  10 pts
  */
-export function calculateScore(data: Omit<SeoResult, "score" | "ogTitle" | "ogDescription" | "ogImage" | "canonicalUrl">): number {
+export function calculateScore(data: Omit<SeoResult, "score" | "ogTitle" | "ogDescription" | "ogImage" | "canonicalUrl" | "robotsTxt" | "sitemap">): number {
   let score = 0;
 
   // --- Title (25 pts) ---
@@ -69,6 +69,68 @@ export function calculateScore(data: Omit<SeoResult, "score" | "ogTitle" | "ogDe
   return Math.min(100, Math.max(0, score));
 }
 
+// ===== FEATURE 3: Fetch robots.txt =====
+/**
+ * Attempts to fetch robots.txt from the given origin.
+ * Returns the first 3 lines if successful, or null if not found/error.
+ */
+async function fetchRobotsTxt(origin: string): Promise<{ exists: boolean; content: string | null }> {
+  try {
+    const robotsUrl = `${origin}/robots.txt`;
+    const response = await fetch(robotsUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; SEOAnalyzer/1.0; +https://seo-analizer.io)",
+      },
+      signal: AbortSignal.timeout(5_000),
+    });
+
+    if (!response.ok || response.status === 404) {
+      return { exists: false, content: null };
+    }
+
+    const content = await response.text();
+    // Extract first 3 lines for preview
+    const lines = content.split("\n").slice(0, 3).join("\n");
+    return { exists: true, content: lines };
+  } catch {
+    // Handle all errors gracefully (timeout, network, etc.)
+    return { exists: false, content: null };
+  }
+}
+
+// ===== FEATURE 4: Fetch sitemap.xml =====
+/**
+ * Attempts to fetch sitemap.xml from the given origin.
+ * Returns the URL if successful, or null if not found/error.
+ */
+async function fetchSitemap(origin: string): Promise<{ exists: boolean; url: string | null }> {
+  try {
+    const sitemapUrl = `${origin}/sitemap.xml`;
+    const response = await fetch(sitemapUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; SEOAnalyzer/1.0; +https://seo-analizer.io)",
+      },
+      signal: AbortSignal.timeout(5_000),
+    });
+
+    if (!response.ok || response.status === 404) {
+      return { exists: false, url: null };
+    }
+
+    const contentType = response.headers.get("content-type") ?? "";
+    // Accept both application/xml and text/xml
+    if (!contentType.includes("xml")) {
+      return { exists: false, url: null };
+    }
+
+    // If we got a valid response, return the sitemap URL
+    return { exists: true, url: sitemapUrl };
+  } catch {
+    // Handle all errors gracefully
+    return { exists: false, url: null };
+  }
+}
+
 /**
  * Fetches the HTML of a URL and runs the SEO analysis using Cheerio.
  * Throws with a human-readable message on failure.
@@ -77,6 +139,10 @@ export async function analyzeUrl(rawUrl: string): Promise<SeoResult> {
   if (!isValidUrl(rawUrl)) {
     throw new Error("Invalid URL. Please enter a full URL starting with http:// or https://");
   }
+
+  // Extract origin for robots.txt and sitemap checks
+  const urlObject = new URL(rawUrl);
+  const origin = `${urlObject.protocol}//${urlObject.host}`;
 
   let html: string;
 
@@ -140,6 +206,12 @@ export async function analyzeUrl(rawUrl: string): Promise<SeoResult> {
     }
   });
 
+  // Fetch robots.txt and sitemap in parallel (non-blocking)
+  const [robotsTxt, sitemap] = await Promise.all([
+    fetchRobotsTxt(origin),
+    fetchSitemap(origin),
+  ]);
+
   const partial = {
     url: rawUrl,
     title,
@@ -157,6 +229,10 @@ export async function analyzeUrl(rawUrl: string): Promise<SeoResult> {
     ogImage,
     // FEATURE 2: Include canonical URL in result
     canonicalUrl,
+    // FEATURE 3: Include robots.txt check results
+    robotsTxt,
+    // FEATURE 4: Include sitemap check results
+    sitemap,
   };
 
   return { ...partial, score: calculateScore(partial) };

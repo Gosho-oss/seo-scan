@@ -21,6 +21,16 @@ export interface SeoResult {
   ogImage: string | null;
   // FEATURE 2: Canonical URL
   canonicalUrl: string | null;
+  // FEATURE 3: Robots.txt Check
+  robotsTxt: {
+    exists: boolean;
+    content: string | null;
+  };
+  // FEATURE 4: Sitemap Check
+  sitemap: {
+    exists: boolean;
+    url: string | null;
+  };
 }
 
 /** Response shape when the API returns an error */
